@@ -40,6 +40,7 @@ public class MenuPrincipal extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1100, 650);
 		setLocationRelativeTo(null);
+		setExtendedState(JFrame.MAXIMIZED_BOTH); // MAXIMIZAR A PANTALLA COMPLETA 
 		getContentPane().setBackground(new Color(245, 247, 250));
 
 		crearMenu();
