@@ -4,169 +4,248 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import arreglos.GestorCursos;
+import clases.Curso;
+
+
 public class PanelCursos extends JPanel {
-	
-	private static final long serialVersionUID = 1L;
-	
-	private JTextField txtCodigo ;
-	private JTextField txtAsignatura;
-	private JTextField txtCreditos;
-	private JTextField txtHoras;
-	
-	private JComboBox<String> cboCiclo;
-	
-	private JButton btnGuardar;
-	private JButton btnLimpiar;
-	private JButton btnEliminar;
-	
-	private JTable table;
+
+    private static final long serialVersionUID = 1L;
+
+    private JTextField txtCodigo;
+    private JTextField txtAsignatura;
+    private JTextField txtCreditos;
+    private JTextField txtHoras;
+
+    private JComboBox<String> cboCiclo;
+
+    private JButton btnGuardar;
+    private JButton btnLimpiar;
+    private JButton btnEliminar;
+
+    private JTable table;
     private DefaultTableModel modelo;
 
+    private GestorCursos gestor;
 
-	public PanelCursos() {
-		setLayout(new BorderLayout());
-		setBackground(new Color(245, 247, 250));
-		
-		JPanel panelPrincipal = new JPanel();
-		panelPrincipal.setLayout(new BorderLayout(16,0));
-		panelPrincipal.setBackground(new Color(245, 247, 250));
-		panelPrincipal.setBorder(BorderFactory.createEmptyBorder(16,16,16,16));
-		
-		add(panelPrincipal, BorderLayout.CENTER);
-		
-		//Panel Formulario 
+
+    public PanelCursos() {
+
+
+        gestor = new GestorCursos();
+
+
+        setLayout(new BorderLayout());
+        setBackground(new Color(245, 247, 250));
+
+
+        JPanel panelPrincipal = new JPanel();
+        panelPrincipal.setLayout(new BorderLayout(16,0));
+        panelPrincipal.setBackground(new Color(245,247,250));
+        panelPrincipal.setBorder(
+                BorderFactory.createEmptyBorder(16,16,16,16)
+        );
+
+        add(panelPrincipal, BorderLayout.CENTER);
+
+
+
+        // PANEL FORMULARIO
+
         JPanel panelFormulario = new JPanel();
-        panelFormulario.setPreferredSize(new Dimension(310, 650));
+        panelFormulario.setPreferredSize(new Dimension(310,650));
         panelFormulario.setBackground(Color.WHITE);
-        panelFormulario.setBorder(BorderFactory.createLineBorder(new Color(210, 215, 220)));
-        panelFormulario.setLayout(null);
-        panelPrincipal.add(panelFormulario, BorderLayout.WEST);
+        panelFormulario.setBorder(
+                BorderFactory.createLineBorder(
+                        new Color(210,215,220)
+                )
+        );
 
-        JLabel lblDetalleCurso = new JLabel("Detalle del Curso");
-        lblDetalleCurso.setBounds(16, 12, 250, 25);
-        lblDetalleCurso.setFont(new Font("Segoe UI", Font.BOLD, 13));
-        lblDetalleCurso.setForeground(new Color(55, 65, 81));
-        panelFormulario.add(lblDetalleCurso);
-        
+        panelFormulario.setLayout(null);
+
+        panelPrincipal.add(
+                panelFormulario,
+                BorderLayout.WEST
+        );
+
+
+
+        JLabel lblTitulo = new JLabel("Detalle del Curso");
+
+        lblTitulo.setBounds(16,12,250,25);
+        lblTitulo.setFont(
+                new Font("Segoe UI",Font.BOLD,13)
+        );
+
+        panelFormulario.add(lblTitulo);
+
+
+
         JSeparator separator = new JSeparator();
-        separator.setBounds(0, 45, 310, 2);
+
+        separator.setBounds(0,45,310,2);
+
         panelFormulario.add(separator);
-        
-     // ==================== CÓDIGO ====================
+
+
+
+        // CODIGO
+
         JLabel lblCodigo = new JLabel("CÓDIGO");
-        lblCodigo.setBounds(16, 62, 120, 20);
-        lblCodigo.setFont(new Font("Segoe UI", Font.BOLD, 12));
+
+        lblCodigo.setBounds(16,62,120,20);
+
         panelFormulario.add(lblCodigo);
 
+
         txtCodigo = new JTextField();
-        txtCodigo.setBounds(16, 85, 278, 32);
-        txtCodigo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        txtCodigo.setBorder(BorderFactory.createLineBorder(new Color(200, 205, 210)));
+
+        txtCodigo.setBounds(16,85,278,32);
+
         panelFormulario.add(txtCodigo);
 
-        // ==================== ASIGNATURA ====================
+
+
+        // ASIGNATURA
+
         JLabel lblAsignatura = new JLabel("ASIGNATURA");
-        lblAsignatura.setBounds(16, 130, 120, 20);
-        lblAsignatura.setFont(new Font("Segoe UI", Font.BOLD, 12));
+
+        lblAsignatura.setBounds(16,130,120,20);
+
         panelFormulario.add(lblAsignatura);
 
+
+
         txtAsignatura = new JTextField();
-        txtAsignatura.setBounds(16, 153, 278, 32);
-        txtAsignatura.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        txtAsignatura.setBorder(BorderFactory.createLineBorder(new Color(200, 205, 210)));
+
+        txtAsignatura.setBounds(16,153,278,32);
+
         panelFormulario.add(txtAsignatura);
 
-        // ==================== CRÉDITOS ====================
+
+
+        // CREDITOS
+
         JLabel lblCreditos = new JLabel("CRÉDITOS");
-        lblCreditos.setBounds(16, 198, 120, 20);
-        lblCreditos.setFont(new Font("Segoe UI", Font.BOLD, 12));
+
+        lblCreditos.setBounds(16,198,120,20);
+
         panelFormulario.add(lblCreditos);
 
+
+
         txtCreditos = new JTextField();
-        txtCreditos.setBounds(16, 221, 278, 32);
-        txtCreditos.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        txtCreditos.setBorder(BorderFactory.createLineBorder(new Color(200, 205, 210)));
+
+        txtCreditos.setBounds(16,221,278,32);
+
         panelFormulario.add(txtCreditos);
 
-        // ==================== HORAS ====================
+
+
+        // HORAS
+
         JLabel lblHoras = new JLabel("HORAS");
-        lblHoras.setBounds(16, 266, 120, 20);
-        lblHoras.setFont(new Font("Segoe UI", Font.BOLD, 12));
+
+        lblHoras.setBounds(16,266,120,20);
+
         panelFormulario.add(lblHoras);
 
+
+
         txtHoras = new JTextField();
-        txtHoras.setBounds(16, 289, 278, 32);
-        txtHoras.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        txtHoras.setBorder(BorderFactory.createLineBorder(new Color(200, 205, 210)));
+
+        txtHoras.setBounds(16,289,278,32);
+
         panelFormulario.add(txtHoras);
 
-        // ==================== CICLO ====================
+
+
+        // CICLO
+
+
         JLabel lblCiclo = new JLabel("CICLO");
-        lblCiclo.setBounds(16, 334, 120, 20);
-        lblCiclo.setFont(new Font("Segoe UI", Font.BOLD, 12));
+
+        lblCiclo.setBounds(16,334,120,20);
+
         panelFormulario.add(lblCiclo);
 
-        String[] ciclos = {
-            "I Ciclo",
-            "II Ciclo",
-            "III Ciclo",
-            "IV Ciclo",
-            "V Ciclo",
-            "VI Ciclo",
-            "VII Ciclo",
-            "VIII Ciclo",
-            "IX Ciclo",
-            "X Ciclo"
+
+
+        String ciclos[] = {
+
+                "I Ciclo",
+                "II Ciclo",
+                "III Ciclo",
+                "IV Ciclo",
+                "V Ciclo",
+                "VI Ciclo",
+                "VII Ciclo",
+                "VIII Ciclo",
+                "IX Ciclo",
+                "X Ciclo"
+
         };
 
+
         cboCiclo = new JComboBox<>(ciclos);
-        cboCiclo.setBounds(16, 357, 278, 32);
-        cboCiclo.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        cboCiclo.setBackground(Color.WHITE);
+
+        cboCiclo.setBounds(16,357,278,32);
+
         panelFormulario.add(cboCiclo);
 
-        // ==================== BOTONES ====================
 
-        // Guardar
+
+
+        // BOTONES
+
+
+        // ==================== BOTÓN GUARDAR ====================
         btnGuardar = new JButton("GUARDAR");
-        btnGuardar.setBounds(16, 430, 85, 35);
+        btnGuardar.setBounds(16, 550, 85, 35);
         btnGuardar.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnGuardar.setFocusPainted(false);
         btnGuardar.setBackground(new Color(46, 125, 50));
         btnGuardar.setForeground(Color.WHITE);
-        btnGuardar.setFocusPainted(false);
         panelFormulario.add(btnGuardar);
 
-        // Limpiar
+        // ==================== BOTÓN LIMPIAR ====================
         btnLimpiar = new JButton("LIMPIAR");
-        btnLimpiar.setBounds(112, 430, 85, 35);
+        btnLimpiar.setBounds(112, 550, 85, 35);
         btnLimpiar.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnLimpiar.setFocusPainted(false);
         btnLimpiar.setBackground(new Color(255, 193, 7));
         btnLimpiar.setForeground(Color.BLACK);
-        btnLimpiar.setFocusPainted(false);
         panelFormulario.add(btnLimpiar);
 
-        // Eliminar
+        // ==================== BOTÓN ELIMINAR ====================
         btnEliminar = new JButton("ELIMINAR");
-        btnEliminar.setBounds(208, 430, 86, 35);
+        btnEliminar.setBounds(208, 550, 86, 35);
         btnEliminar.setFont(new Font("Segoe UI", Font.BOLD, 12));
+        btnEliminar.setFocusPainted(false);
         btnEliminar.setBackground(new Color(211, 47, 47));
         btnEliminar.setForeground(Color.WHITE);
-        btnEliminar.setFocusPainted(false);
         panelFormulario.add(btnEliminar);
+
+
+
+        // PANEL TABLA
+
         
         // =======================
         // PANEL TABLA
@@ -177,58 +256,347 @@ public class PanelCursos extends JPanel {
         panelTabla.setBackground(Color.WHITE);
         panelTabla.setBorder(BorderFactory.createLineBorder(new Color(210, 215, 220)));
         panelPrincipal.add(panelTabla, BorderLayout.CENTER);
-        
-        // =======================
-        // TABLA
-        // =======================
-        
-        JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBorder(new EmptyBorder(0, 0, 0, 0));
-        panelTabla.add(scrollPane, BorderLayout.CENTER);
+
+        panelTabla.setBorder(
+                BorderFactory.createLineBorder(
+                        new Color(210,215,220)
+                )
+        );
+
+
+        panelPrincipal.add(
+                panelTabla,
+                BorderLayout.CENTER
+        );
+
+
+
+
+        JScrollPane scroll = new JScrollPane();
+
+        scroll.setBorder(
+                new EmptyBorder(0,0,0,0)
+        );
+
+
+        panelTabla.add(
+                scroll,
+                BorderLayout.CENTER
+        );
+
+
 
         table = new JTable();
 
-        modelo = new DefaultTableModel(
-                new Object[][] {},
-                new String[] {
-                	    "Código",
-                	    "Asignatura",
-                	    "Créditos",
-                	    "Horas",
-                	    "Ciclo"
-                	}
-        ) {
-            private static final long serialVersionUID = 1L;
 
-            @Override
-            public boolean isCellEditable(int row, int column) {
+        modelo = new DefaultTableModel(
+
+                new Object[][] {},
+
+                new String[]{
+
+                        "Código",
+                        "Asignatura",
+                        "Créditos",
+                        "Horas",
+                        "Ciclo"
+
+                }
+
+        ){
+
+            public boolean isCellEditable(
+                    int fila,
+                    int columna
+            ){
+
                 return false;
+
             }
+
         };
 
+
         table.setModel(modelo);
-        scrollPane.setViewportView(table);
 
-        table.setRowHeight(36);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        table.setForeground(Color.BLACK);
-        table.setGridColor(new Color(230, 230, 230));
-        table.setSelectionBackground(new Color(227, 242, 253));
-        table.setSelectionForeground(Color.BLACK);
-        table.setShowVerticalLines(true);
-        table.setShowHorizontalLines(true);
 
-        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
-        table.getTableHeader().setBackground(new Color(38, 50, 56));
-        table.getTableHeader().setForeground(Color.WHITE);
-        table.getTableHeader().setPreferredSize(new Dimension(0, 36));
-        table.getTableHeader().setReorderingAllowed(false);
+        scroll.setViewportView(table);
 
-        table.getColumnModel().getColumn(0).setPreferredWidth(80);   
-        table.getColumnModel().getColumn(1).setPreferredWidth(180);  
-        table.getColumnModel().getColumn(2).setPreferredWidth(180);  
-        table.getColumnModel().getColumn(3).setPreferredWidth(100);  
-        table.getColumnModel().getColumn(4).setPreferredWidth(120);  
 
-	}
+
+
+        // EVENTOS
+
+
+        btnGuardar.addActionListener(
+                
+                new ActionListener(){
+
+                    public void actionPerformed(ActionEvent e){
+
+                        guardarCurso();
+
+                    }
+
+                }
+
+        );
+
+
+
+        btnLimpiar.addActionListener(
+
+                new ActionListener(){
+
+                    public void actionPerformed(ActionEvent e){
+
+                        limpiarCampos();
+
+                    }
+
+                }
+
+        );
+
+
+
+        btnEliminar.addActionListener(
+
+                new ActionListener(){
+
+                    public void actionPerformed(ActionEvent e){
+
+                        eliminarCurso();
+
+                    }
+
+                }
+
+        );
+
+
+
+        cargarTabla();
+
+    }
+
+
+
+
+    // ==========================
+    // GUARDAR CURSO
+    // ==========================
+
+
+    private void guardarCurso(){
+
+
+        try{
+
+
+            int codigo =
+                    Integer.parseInt(txtCodigo.getText());
+
+
+            String asignatura =
+                    txtAsignatura.getText();
+
+
+
+            int creditos =
+                    Integer.parseInt(
+                            txtCreditos.getText()
+                    );
+
+
+            int horas =
+                    Integer.parseInt(
+                            txtHoras.getText()
+                    );
+
+
+            int ciclo =
+                    cboCiclo.getSelectedIndex()+1;
+
+
+
+            Curso curso =
+                    new Curso(
+                            codigo,
+                            asignatura,
+                            ciclo,
+                            creditos,
+                            horas
+                    );
+
+
+
+            gestor.agregarCurso(curso);
+
+
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Curso guardado correctamente"
+            );
+
+
+            cargarTabla();
+
+            limpiarCampos();
+
+
+
+        }catch(Exception e){
+
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Complete todos los campos"
+            );
+
+
+        }
+
+
+    }
+
+
+
+
+
+
+    // ==========================
+    // CARGAR TABLA
+    // ==========================
+
+
+    private void cargarTabla(){
+
+
+        modelo.setRowCount(0);
+
+
+
+        for(Curso c : gestor.listarCursos()){
+
+
+            modelo.addRow(
+                    
+                    new Object[]{
+
+
+                            c.getCodCurso(),
+
+                            c.getAsignatura(),
+
+                            c.getCreditos(),
+
+                            c.getHoras(),
+
+                            c.getCiclo()+" Ciclo"
+
+
+                    }
+
+            );
+
+
+        }
+
+
+    }
+
+
+
+
+
+
+
+    // ==========================
+    // LIMPIAR
+    // ==========================
+
+
+    private void limpiarCampos(){
+
+
+        txtCodigo.setText("");
+
+        txtAsignatura.setText("");
+
+        txtCreditos.setText("");
+
+        txtHoras.setText("");
+
+        cboCiclo.setSelectedIndex(0);
+
+
+    }
+
+
+
+
+
+
+
+
+    // ==========================
+    // ELIMINAR
+    // ==========================
+
+
+    private void eliminarCurso(){
+
+
+        int fila =
+                table.getSelectedRow();
+
+
+
+        if(fila==-1){
+
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Seleccione un curso"
+            );
+
+
+            return;
+
+        }
+
+
+
+        int codigo =
+                Integer.parseInt(
+                        modelo.getValueAt(
+                                fila,
+                                0
+                        ).toString()
+                );
+
+
+
+        if(gestor.eliminarCurso(codigo)){
+
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Curso eliminado"
+            );
+
+
+            cargarTabla();
+
+
+        }
+
+
+
+    }
+
+
+
 }
