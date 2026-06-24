@@ -32,6 +32,8 @@ public class GestorMatricula {
         return null; 
     }
     
+    
+    
     public void adicionar(Matricula nuevaMatricula) {
         listaMatriculas.add(nuevaMatricula);
         guardarDatos();

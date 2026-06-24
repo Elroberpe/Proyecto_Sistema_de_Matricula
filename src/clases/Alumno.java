@@ -45,7 +45,20 @@ public class Alumno {
         this.celular = celular;
     }
 
-    public int getEstado() {
+    public String getEstado() {
+    	switch (estado) {
+        case 0:
+            return "Registrado";
+        case 1:
+            return "Matriculado";
+        case 2:
+            return "Retirado";
+        default:
+            return "Desconocido";
+    	}
+    }
+    
+    public int getEstadoNumerico() {
         return estado;
     }
 

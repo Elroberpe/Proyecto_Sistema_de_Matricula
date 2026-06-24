@@ -30,9 +30,9 @@ public class PanelMatricula extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private GestorMatricula gestorMatricula = new GestorMatricula();
-	private GestorAlumnos gestorAlumnos = new GestorAlumnos() ;
-	private GestorCursos gestorCurso = new GestorCursos();
+	private GestorMatricula gestorMatricula;
+	private GestorAlumnos gestorAlumnos ;
+	private GestorCursos gestorCurso ;
 	
 	private JTextField txtNumeroMatricula ;
 	private JTextField txxCodAlumno;
@@ -46,7 +46,12 @@ public class PanelMatricula extends JPanel {
 	private JTable table;
     private DefaultTableModel modelo;
 	
-	public PanelMatricula() {
+	public PanelMatricula(GestorAlumnos ga, GestorMatricula gm, GestorCursos gc) {
+		
+		this.gestorAlumnos = ga;
+	    this.gestorMatricula = gm;
+	    this.gestorCurso = gc;
+		
 		setLayout(new BorderLayout());
 		setBackground(new Color(245, 247, 250));
 
@@ -335,7 +340,7 @@ public class PanelMatricula extends JPanel {
 	    	return;
 	    }
 	    
-	    if(alumno.getEstado() == 2) {
+	    if(alumno.getEstado().equals("Retirado")) {
 	    	JOptionPane.showMessageDialog(null, "El alumno ya se encuentra retirado");
 	    	return;
 	    }

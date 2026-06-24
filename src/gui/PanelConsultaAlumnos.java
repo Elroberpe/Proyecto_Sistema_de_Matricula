@@ -38,13 +38,17 @@ public class PanelConsultaAlumnos extends JPanel {
     private JTextField txtCiclo;
     private JTextField txtHoras;
     
-    private GestorAlumnos ga = new GestorAlumnos();
-    private GestorMatricula gm = new GestorMatricula();
-    private GestorCursos gc = new GestorCursos();
-    private GestorRetiro gr = new GestorRetiro();
+    private GestorAlumnos ga;
+    private GestorMatricula gm;
+    private GestorCursos gc;
+    private GestorRetiro gr;
 
-    public PanelConsultaAlumnos() {
-
+    public PanelConsultaAlumnos(GestorAlumnos ga, GestorMatricula gm,GestorCursos gc, GestorRetiro gr) {
+    	this.ga = ga;
+    	this.gm = gm;
+    	this.gc = gc;
+    	this.gr = gr;
+    	
         setLayout(null);
         setBackground(new Color(240, 242, 245));
 
@@ -248,7 +252,7 @@ public class PanelConsultaAlumnos extends JPanel {
             
             mostrarAlumno(a);
           
-            if(a.getEstado() == 1) {
+            if(a.getEstado().equals("Matriculado")) {
             	// 3. BUSCAR MATRÍCULA
                 Matricula m = gm.buscarPorAlumno(cod);
 

@@ -13,6 +13,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
+import arreglos.GestorAlumnos;
+import arreglos.GestorCursos;
+import arreglos.GestorMatricula;
+import arreglos.GestorRetiro;
+
 public class MenuPrincipal extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -20,6 +25,11 @@ public class MenuPrincipal extends JFrame {
 	private JPanel panelContenedor;
 	private CardLayout cardLayout;
 
+	GestorAlumnos ga = new GestorAlumnos();
+	GestorMatricula gm = new GestorMatricula();
+	GestorRetiro gr = new GestorRetiro();
+	GestorCursos gc = new GestorCursos();
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -48,11 +58,11 @@ public class MenuPrincipal extends JFrame {
 		cardLayout = new CardLayout();
 		panelContenedor = new JPanel(cardLayout);
 
-		panelContenedor.add(new PanelAlumnos(), "ALUMNOS");
+		panelContenedor.add(new PanelAlumnos(ga), "ALUMNOS");
 		panelContenedor.add(new PanelCursos(), "CURSOS");
-		panelContenedor.add(new PanelMatricula(), "MATRICULA");
-		panelContenedor.add(new PanelRetiros(), "RETIROS");
-		panelContenedor.add(new PanelConsultaAlumnos(), "CONSULTA ALUMNOS");
+		panelContenedor.add(new PanelMatricula(ga,gm,gc), "MATRICULA");
+		panelContenedor.add(new PanelRetiros(ga,gm,gr), "RETIROS");
+		panelContenedor.add(new PanelConsultaAlumnos(ga,gm,gc,gr), "CONSULTA ALUMNOS");
 		getContentPane().add(panelContenedor);
 
 		cardLayout.show(panelContenedor, "ALUMNOS");
@@ -140,4 +150,6 @@ public class MenuPrincipal extends JFrame {
 		item.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
 		return item;
 	}
+	
+	
 }

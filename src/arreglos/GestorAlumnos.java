@@ -7,55 +7,109 @@ import java.util.ArrayList;
 
 public class GestorAlumnos {
 
-    private String archivo = "alumnos.txt";
-
-    public int generarCodigoAlumno() {
-        ArrayList<Alumno> alumnos = listarAlumnos();
-        
-        if (alumnos.isEmpty()) {
-            return 202010001;
-        }
-        
-        int mayorCodigo = alumnos.get(0).getCodAlumno();
-        
-        for (Alumno a : alumnos) {
-            if (a.getCodAlumno() > mayorCodigo) {
-                mayorCodigo = a.getCodAlumno();
-            }
-        }
-        return mayorCodigo + 1;
-    }
-    
+	private int contadorCorrelativo = 202010001;
+	private final String archivo = "alumnos.txt";
+	private ArrayList<Alumno> listaAlumnos;
+	
+	public GestorAlumnos() {
+	    listaAlumnos = new ArrayList<>();
+	    cargarDatos();
+	}
+	
+	public int obtenerSiguienteCodigo() {
+	    return contadorCorrelativo;
+	}
+	
     public boolean agregarAlumno(Alumno alumno) {
 
         if (buscarAlumno(alumno.getCodAlumno()) != null) {
             return false;
         }
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo, true))) {
-            bw.write(alumno.toLineaArchivo());
-            bw.newLine();
-            return true;
-        } catch (IOException e) {
-            System.out.println("Error al guardar alumno: " + e.getMessage());
-            return false;
-        }
+        listaAlumnos.add(alumno);
+        guardarTodos();
+        contadorCorrelativo++;
+        return true;
     }
 
 
     public ArrayList<Alumno> listarAlumnos() {
+    	return listaAlumnos;
+    }
 
-        ArrayList<Alumno> alumnos = new ArrayList<>();
 
-        try (BufferedReader br =
-                new BufferedReader(new FileReader(archivo))) {
+    public Alumno buscarAlumno(int codAlumno){
+        for(Alumno a : listaAlumnos){
+            if(a.getCodAlumno() == codAlumno){
+                return a;
+            }
+        }
+        return null;
+    }
+    
+    public boolean existeDni(String dni, int codigoActual) {
 
+        for (Alumno a : listaAlumnos) {
+            if (a.getDni().equals(dni) && a.getCodAlumno() != codigoActual) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean eliminarAlumno(int codAlumno) {
+
+        for (int i = 0; i < listaAlumnos.size(); i++) {
+
+            Alumno a = listaAlumnos.get(i);
+
+            // SOLO SE PUEDE ELIMINAR SI ESTÁ REGISTRADO (0)
+            if (a.getCodAlumno() == codAlumno) {
+                if (!a.getEstado().equals("Registrado")) {
+                    return false; 
+                }
+                listaAlumnos.remove(i);
+                guardarTodos();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean modificarAlumno(Alumno alumnoNuevo){
+    	for(int i = 0; i < listaAlumnos.size(); i++){
+            if(listaAlumnos.get(i).getCodAlumno() == alumnoNuevo.getCodAlumno()){
+                listaAlumnos.set(i, alumnoNuevo);
+                guardarTodos();
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    public boolean actualizarEstado(int codAlumno, int nuevoEstado) {
+
+    	for (Alumno a : listaAlumnos) {
+            if (a.getCodAlumno() == codAlumno) {
+                a.setEstado(nuevoEstado);
+                guardarTodos();
+                return true;
+            }
+        }
+    	
+        return false;
+    }
+
+    private void cargarDatos() {
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+        	int mayorCodigo = 202010000;
             String linea;
-
             while ((linea = br.readLine()) != null) {
-
                 String datos[] = linea.split(",");
-
                 Alumno alumno = new Alumno(
                         Integer.parseInt(datos[0]),
                         datos[1],
@@ -65,97 +119,29 @@ public class GestorAlumnos {
                         Integer.parseInt(datos[5]),
                         Integer.parseInt(datos[6])
                 );
-
-                alumnos.add(alumno);
+                listaAlumnos.add(alumno);
+                if (alumno.getCodAlumno() > mayorCodigo) {
+                    mayorCodigo = alumno.getCodAlumno();
+                }
             }
+            
+            contadorCorrelativo = mayorCodigo + 1;
 
         } catch (IOException e) {
-            System.out.println("Error al leer alumnos: " + e.getMessage() );
+            System.out.println("Error al leer alumnos: " + e.getMessage());
         }
-
-        return alumnos;
-    }
-
-
-    public Alumno buscarAlumno(int codAlumno){
-
-        ArrayList<Alumno> alumnos = listarAlumnos();
-        for(Alumno a : alumnos){
-            if(a.getCodAlumno() == codAlumno){
-                return a;
-            }
-        }
-        return null;
-    }
-
-
-    public boolean eliminarAlumno(int codAlumno) {
-
-        ArrayList<Alumno> alumnos = listarAlumnos();
-        
-        for (int i = 0; i < alumnos.size(); i++) {
-
-            if (alumnos.get(i).getCodAlumno() == codAlumno) {
-                alumnos.remove(i);
-                guardarTodos(alumnos);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean modificarAlumno(Alumno alumnoNuevo){
-        ArrayList<Alumno> alumnos = listarAlumnos();
-        boolean encontrado = false;
-        for(int i = 0; i < alumnos.size(); i++){
-            if(alumnos.get(i).getCodAlumno() == alumnoNuevo.getCodAlumno()){
-                alumnos.set(i, alumnoNuevo);
-                encontrado = true;
-                break;
-            }
-        }
-        if(encontrado){
-            guardarTodos(alumnos);
-        }
-        return encontrado;
-
     }
     
-    public boolean actualizarEstado(int codAlumno, int nuevoEstado) {
+    private void guardarTodos(){
+    	try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivo))) {
 
-        ArrayList<Alumno> alumnos = listarAlumnos();
-        
-        for (int i = 0; i < alumnos.size(); i++) {
-            Alumno a = alumnos.get(i);
-            if (a.getCodAlumno() == codAlumno) {
-                a.setEstado(nuevoEstado);
-                alumnos.set(i, a);
-                guardarTodos(alumnos);
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void guardarTodos(ArrayList<Alumno> alumnos){
-
-        try{
-            FileWriter fw = new FileWriter(archivo);
-            BufferedWriter bw = new BufferedWriter(fw);
-            
-            for(Alumno a : alumnos){
-                bw.write(a.toLineaArchivo()
-                );
+            for (Alumno a : listaAlumnos) {
+                bw.write(a.toLineaArchivo());
                 bw.newLine();
             }
 
-            bw.close();
-
-        }catch(IOException e){
-            System.out.println( "Error actualizando archivo"
-            );
+        } catch (IOException e) {
+            System.out.println("Error actualizando archivo");
         }
     }
 }
