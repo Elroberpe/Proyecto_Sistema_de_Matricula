@@ -17,7 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
@@ -44,11 +43,15 @@ public class PanelRetiros extends JPanel {
 	private JTable table;
     private DefaultTableModel modelo;
 	
-    private GestorRetiro gestorRetiro = new GestorRetiro();
+    private GestorRetiro gestorRetiro;
     private GestorMatricula gestorMatricula;
-    private GestorAlumnos gestorAlumno = new GestorAlumnos();
+    private GestorAlumnos gestorAlumno;
 
-	public PanelRetiros() {
+	public PanelRetiros(GestorAlumnos ga, GestorMatricula gm, GestorRetiro gr) {
+	    this.gestorAlumno = ga;
+	    this.gestorMatricula = gm;
+	    this.gestorRetiro = gr;
+		
 		setLayout(new BorderLayout());
 		setBackground(new Color(245, 247, 250));
 
@@ -253,7 +256,6 @@ public class PanelRetiros extends JPanel {
 	        String fecha = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
 	        String hora = new SimpleDateFormat("HH:mm:ss").format(new Date());
 	        
-	        gestorMatricula = new GestorMatricula();
 	        Matricula matriculaEncontrada = gestorMatricula.buscarPorNumero(numMatricula);
 	        
 	        if(matriculaEncontrada == null) {
@@ -269,7 +271,7 @@ public class PanelRetiros extends JPanel {
 	        
 	        int codAlumno = matriculaEncontrada.getCodAlumno();
 
-	        if (gestorAlumno.buscarAlumno(codAlumno).getEstado() == 2) {
+	        if (gestorAlumno.buscarAlumno(codAlumno).getEstado().equals("Retirado") ) {
 	            JOptionPane.showMessageDialog(null,
 	                    "El alumno ya se encuentra retirado.");
 	            return;
@@ -306,9 +308,7 @@ public class PanelRetiros extends JPanel {
 			JOptionPane.showMessageDialog(null, "No existe ese retiro");
 			return;
 		}
-		
-		gestorMatricula =new GestorMatricula();
-		
+	
 		Matricula matricula = gestorMatricula.buscarPorNumero(retiro.getNumMatricula());
 		if(matricula == null) {
 			JOptionPane.showMessageDialog(null, "No la matricula");
@@ -319,7 +319,7 @@ public class PanelRetiros extends JPanel {
 		int codAlumno = matricula.getCodAlumno();
 		Alumno alumno = gestorAlumno.buscarAlumno(codAlumno);
 		
-		if (alumno.getEstado() != 2) {
+		if (!alumno.getEstado().equals("Retirado")) {
 	        JOptionPane.showMessageDialog(null, "Solo se puede eliminar un retiro cuando el alumno está retirado.");
 	        return;
 	    }
