@@ -40,7 +40,7 @@ public class MenuPrincipal extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(1100, 650);
 		setLocationRelativeTo(null);
-		setExtendedState(JFrame.MAXIMIZED_BOTH); // MAXIMIZAR A PANTALLA COMPLETA 
+		setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		getContentPane().setBackground(new Color(245, 247, 250));
 
 		crearMenu();
@@ -53,11 +53,6 @@ public class MenuPrincipal extends JFrame {
 		panelContenedor.add(new PanelMatricula(), "MATRICULA");
 		panelContenedor.add(new PanelRetiros(), "RETIROS");
 		panelContenedor.add(new PanelConsultaAlumnos(), "CONSULTA ALUMNOS");
-		panelContenedor.add(new PanelConsultaCursos(), "CONSULTA CURSOS");
-		panelContenedor.add(new PanelConsultaMatriculas(), "CONSULTA MATRICULAS");
-		panelContenedor.add(new PanelConsultaRetiros(), "CONSULTA RETIROS");
-		
-		
 		getContentPane().add(panelContenedor);
 
 		cardLayout.show(panelContenedor, "ALUMNOS");
@@ -105,19 +100,9 @@ public class MenuPrincipal extends JFrame {
 		JMenuItem itemConsultaAlumnos = crearItem("Alumnos");
 		itemConsultaAlumnos.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/Imagenes/Iconos/alumnos.png")));
 
-		JMenuItem itemConsultaCursos = crearItem("Cursos");
-		itemConsultaCursos.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/Imagenes/Iconos/cursos.png")));
-
-		JMenuItem itemConsultaMatriculas = crearItem("Matriculas");
-		itemConsultaMatriculas.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/Imagenes/Iconos/matricula.png")));
-
-		JMenuItem itemConsultaRetiros = crearItem("Retiros");
-		itemConsultaRetiros.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/Imagenes/Iconos/retiro.png")));
 
 		mnConsulta.add(itemConsultaAlumnos);
-		mnConsulta.add(itemConsultaCursos);
-		mnConsulta.add(itemConsultaMatriculas);
-		mnConsulta.add(itemConsultaRetiros);
+
 
 		// MENÚ REPORTE
 		JMenu mnReporte = crearMenuEstilizado("Reporte");
@@ -130,10 +115,6 @@ public class MenuPrincipal extends JFrame {
 		itemMatricula.addActionListener(e -> mostrarPanel("MATRICULA"));
 		itemRetiros.addActionListener(e -> mostrarPanel("RETIROS"));
 		itemConsultaAlumnos.addActionListener(e -> mostrarPanel("CONSULTA ALUMNOS"));
-		itemConsultaCursos.addActionListener(e -> mostrarPanel("CONSULTA CURSOS"));
-		itemConsultaMatriculas.addActionListener(e -> mostrarPanel("CONSULTA MATRICULAS"));
-		itemConsultaRetiros.addActionListener(e -> mostrarPanel("CONSULTA RETIROS"));
-		
 	}
 
 	

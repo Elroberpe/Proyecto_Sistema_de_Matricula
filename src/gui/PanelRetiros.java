@@ -4,10 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
@@ -17,6 +21,13 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import arreglos.GestorAlumnos;
+import arreglos.GestorMatricula;
+import arreglos.GestorRetiro;
+import clases.Alumno;
+import clases.Matricula;
+import clases.Retiro;
+
 public class PanelRetiros extends JPanel {
 
 	private static final long serialVersionUID = 1L;
@@ -24,8 +35,7 @@ public class PanelRetiros extends JPanel {
 	
 	private JTextField txtNumeroRetiro;
 	private JTextField txtNumeroMatricula;
-	private JTextField txtFecha;
-	private JTextField txtHora;
+
 	
 	private JButton btnGuardar;
 	private JButton btnLimpiar;
@@ -34,6 +44,9 @@ public class PanelRetiros extends JPanel {
 	private JTable table;
     private DefaultTableModel modelo;
 	
+    private GestorRetiro gestorRetiro = new GestorRetiro();
+    private GestorMatricula gestorMatricula;
+    private GestorAlumnos gestorAlumno = new GestorAlumnos();
 
 	public PanelRetiros() {
 		setLayout(new BorderLayout());
@@ -88,29 +101,7 @@ public class PanelRetiros extends JPanel {
         txtNumeroMatricula.setBorder(BorderFactory.createLineBorder(new Color(200, 205, 210)));
         panelFormulario.add(txtNumeroMatricula);
 
-        // ==================== FECHA ====================
-        JLabel lblFecha = new JLabel("FECHA");
-        lblFecha.setBounds(16, 198, 120, 20);
-        lblFecha.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        panelFormulario.add(lblFecha);
-
-        txtFecha = new JTextField();
-        txtFecha.setBounds(16, 221, 278, 32);
-        txtFecha.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        txtFecha.setBorder(BorderFactory.createLineBorder(new Color(200, 205, 210)));
-        panelFormulario.add(txtFecha);
-
-     // ==================== HORA ====================
-        JLabel lblHora = new JLabel("HORA");
-        lblHora.setBounds(16, 266, 120, 20);
-        lblHora.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        panelFormulario.add(lblHora);
-
-        txtHora = new JTextField();
-        txtHora.setBounds(16, 289, 278, 32);
-        txtHora.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        txtFecha.setBorder(BorderFactory.createLineBorder(new Color(200, 205, 210)));
-        panelFormulario.add(txtHora);
+        
         
         // ==================== BOTÓN GUARDAR ====================
         btnGuardar = new JButton("GUARDAR");
@@ -120,6 +111,8 @@ public class PanelRetiros extends JPanel {
         btnGuardar.setForeground(Color.WHITE);
         btnGuardar.setFocusPainted(false);
         panelFormulario.add(btnGuardar);
+        
+        btnGuardar.addActionListener(e -> guardarRetiro());
 
         // ==================== BOTÓN LIMPIAR ====================
         btnLimpiar = new JButton("LIMPIAR");
@@ -129,15 +122,22 @@ public class PanelRetiros extends JPanel {
         btnLimpiar.setForeground(Color.BLACK);
         btnLimpiar.setFocusPainted(false);
         panelFormulario.add(btnLimpiar);
+        
+        btnLimpiar.addActionListener(e->{
+        	limpiarCampos();
+        	mostrarSiguienteCodigo();
+        });
 
         // ==================== BOTÓN ELIMINAR ====================
-        btnEliminar = new JButton("ELIMINAR");
+        btnEliminar = new JButton("CANCELAR");
         btnEliminar.setBounds(208, 357, 86, 35);
         btnEliminar.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnEliminar.setBackground(new Color(211, 47, 47));
         btnEliminar.setForeground(Color.WHITE);
         btnEliminar.setFocusPainted(false);
         panelFormulario.add(btnEliminar);
+        
+        btnEliminar.addActionListener(e -> cancelarRetiro());
         
      // =======================
         // PANEL TABLA
@@ -198,6 +198,145 @@ public class PanelRetiros extends JPanel {
         table.getColumnModel().getColumn(0).setPreferredWidth(80);   
         table.getColumnModel().getColumn(1).setPreferredWidth(180);  
         table.getColumnModel().getColumn(2).setPreferredWidth(180);  
-        table.getColumnModel().getColumn(3).setPreferredWidth(100);    
+        table.getColumnModel().getColumn(3).setPreferredWidth(100); 
+        
+        listarRetiros();
+        mostrarSiguienteCodigo();
+        
+        table.getSelectionModel().addListSelectionListener(e ->{
+        	if(!e.getValueIsAdjusting()) {
+        		mostrarDatos();
+        	}
+        });
 	}
+	
+	private void mostrarSiguienteCodigo() {
+	    txtNumeroRetiro.setText(String.valueOf(gestorRetiro.obtenerSiguienteCodigo()));
+	    txtNumeroRetiro.setEditable(false);
+	}
+	
+	private void listarRetiros() {
+		
+	    modelo.setRowCount(0);
+	    ArrayList<Retiro> lista = gestorRetiro.obtenerRetiros();
+
+	    for (Retiro r : lista) {
+	        Object[] fila = new Object[4];
+	        
+	        fila[0] = r.getNumRetiro();
+	        fila[1] = r.getNumMatricula(); 
+	        fila[2] = r.getFecha();
+	        fila[3] = r.getHora();
+
+	        modelo.addRow(fila);
+	    }
+	}
+	
+	private void mostrarDatos() {
+		
+		int fila = table.getSelectedRow();
+		if(fila == -1) {
+			return;
+		}
+		
+		txtNumeroRetiro.setText(table.getValueAt(fila, 0).toString());
+		txtNumeroMatricula.setText(table.getValueAt(fila, 1).toString());		
+		txtNumeroMatricula.setEditable(false);
+		
+	}
+	
+	private void guardarRetiro() {
+	    
+		try {
+	        int numRetiro = Integer.parseInt(txtNumeroRetiro.getText()); 
+	        int numMatricula = Integer.parseInt(txtNumeroMatricula.getText().trim());	          
+	        String fecha = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+	        String hora = new SimpleDateFormat("HH:mm:ss").format(new Date());
+	        
+	        gestorMatricula = new GestorMatricula();
+	        Matricula matriculaEncontrada = gestorMatricula.buscarPorNumero(numMatricula);
+	        
+	        if(matriculaEncontrada == null) {
+	        	 JOptionPane.showMessageDialog(null, "No existe el codigo de la Matricula");
+		        return;
+	        }
+	        
+	        if(gestorRetiro.yaTieneRetiro(numMatricula)) {
+	        	 JOptionPane.showMessageDialog(null, "Ya hay un retiro con esa matricula");
+			        return;
+	        }
+	        
+	        
+	        int codAlumno = matriculaEncontrada.getCodAlumno();
+
+	        if (gestorAlumno.buscarAlumno(codAlumno).getEstado() == 2) {
+	            JOptionPane.showMessageDialog(null,
+	                    "El alumno ya se encuentra retirado.");
+	            return;
+	        }
+	        
+	        gestorAlumno.actualizarEstado(codAlumno,2);
+	        
+	        Retiro nuevoRetiro = new Retiro(numRetiro, numMatricula, fecha, hora);
+
+	        gestorRetiro.adicionar(nuevoRetiro);
+	        JOptionPane.showMessageDialog(null, "¡Retiro registrado exitosamente!");
+	        listarRetiros();
+	        limpiarCampos();
+	        mostrarSiguienteCodigo();
+
+	    } catch (NumberFormatException ex) {
+	        JOptionPane.showMessageDialog(null, "Error: Ingrese un número de matrícula válido.");
+	    }
+	}
+	
+	private void limpiarCampos() {
+	    txtNumeroMatricula.setText("");
+	    table.clearSelection();
+	    txtNumeroMatricula.setEditable(true);
+	    txtNumeroMatricula.requestFocus();
+	}
+	
+	private void cancelarRetiro() {
+		 
+		int numRetiro = Integer.parseInt(txtNumeroRetiro.getText());
+		Retiro retiro = gestorRetiro.obtenerRetiro(numRetiro);
+		
+		if(retiro == null) {
+			JOptionPane.showMessageDialog(null, "No existe ese retiro");
+			return;
+		}
+		
+		gestorMatricula =new GestorMatricula();
+		
+		Matricula matricula = gestorMatricula.buscarPorNumero(retiro.getNumMatricula());
+		if(matricula == null) {
+			JOptionPane.showMessageDialog(null, "No la matricula");
+			return;
+		}
+		
+		
+		int codAlumno = matricula.getCodAlumno();
+		Alumno alumno = gestorAlumno.buscarAlumno(codAlumno);
+		
+		if (alumno.getEstado() != 2) {
+	        JOptionPane.showMessageDialog(null, "Solo se puede eliminar un retiro cuando el alumno está retirado.");
+	        return;
+	    }
+		
+		int respuesta = JOptionPane.showConfirmDialog(this,"¿Desea eliminar el retiro?","Confirmación",JOptionPane.YES_NO_OPTION);
+
+	    if (respuesta == JOptionPane.YES_OPTION) {
+	        gestorRetiro.eliminarRetiro(numRetiro);
+	        gestorAlumno.actualizarEstado(codAlumno, 1);
+	        JOptionPane.showMessageDialog(null, "Retiro eliminado correctamente.");
+
+	        listarRetiros();
+	        limpiarCampos();
+	        mostrarSiguienteCodigo();
+	    }
+	}
+	
+	
+	
 }

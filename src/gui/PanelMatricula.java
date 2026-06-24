@@ -4,28 +4,40 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+
+import arreglos.GestorAlumnos;
+import arreglos.GestorCursos;
+import arreglos.GestorMatricula;
+import clases.Alumno;
+import clases.Matricula;
 
 public class PanelMatricula extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
+	private GestorMatricula gestorMatricula = new GestorMatricula();
+	private GestorAlumnos gestorAlumnos = new GestorAlumnos() ;
+	private GestorCursos gestorCurso = new GestorCursos();
+	
 	private JTextField txtNumeroMatricula ;
 	private JTextField txxCodAlumno;
 	private JTextField txtCodCurso;
-	private JTextField txtFecha;
-	private JTextField txtHora;
+
 
 	private JButton btnGuardar;
 	private JButton btnLimpiar;
@@ -99,29 +111,7 @@ public class PanelMatricula extends JPanel {
         txtCodCurso.setBorder(BorderFactory.createLineBorder(new Color(200, 205, 210)));
         panelFormulario.add(txtCodCurso);
 
-     // ==================== FECHA ====================
-        JLabel lblFecha = new JLabel("FECHA");
-        lblFecha.setBounds(16, 266, 120, 20);
-        lblFecha.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        panelFormulario.add(lblFecha);
-
-        txtFecha = new JTextField();
-        txtFecha.setBounds(16, 289, 278, 32);
-        txtFecha.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        txtFecha.setBorder(BorderFactory.createLineBorder(new Color(200, 205, 210)));
-        panelFormulario.add(txtFecha);
-
-        // ==================== HORA ====================
-        JLabel lblHora = new JLabel("HORA");
-        lblHora.setBounds(16, 334, 120, 20);
-        lblHora.setFont(new Font("Segoe UI", Font.BOLD, 12));
-        panelFormulario.add(lblHora);
-
-        txtHora = new JTextField();
-        txtHora.setBounds(16, 357, 278, 32);
-        txtHora.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        txtHora.setBorder(BorderFactory.createLineBorder(new Color(200, 205, 210)));
-        panelFormulario.add(txtHora);
+    
 
         // ==================== BOTÓN GUARDAR ====================
         btnGuardar = new JButton("GUARDAR");
@@ -142,13 +132,20 @@ public class PanelMatricula extends JPanel {
         panelFormulario.add(btnLimpiar);
 
         // ==================== BOTÓN ELIMINAR ====================
-        btnEliminar = new JButton("ELIMINAR");
+        btnEliminar = new JButton("CANCELAR");
         btnEliminar.setBounds(208, 420, 86, 35);
         btnEliminar.setFont(new Font("Segoe UI", Font.BOLD, 12));
         btnEliminar.setBackground(new Color(211, 47, 47));
         btnEliminar.setForeground(Color.WHITE);
         btnEliminar.setFocusPainted(false);
         panelFormulario.add(btnEliminar);
+        
+        btnGuardar.addActionListener( e -> guardarMatricula());
+        btnLimpiar.addActionListener( e -> {
+            limpiarCampos();
+            mostrarSiguienteCodigo();
+        });
+        btnEliminar.addActionListener(e -> cancelarMatricula());
         
         // =======================
         // PANEL TABLA
@@ -174,8 +171,8 @@ public class PanelMatricula extends JPanel {
                 new Object[][] {},
                 new String[] {
                 	    "Numero de Matricula",
-                	    "Alumno",
-                	    "Matricula",
+                	    "Codigo Alumno",
+                	    "Codigo Curso",
                 	    "Fecha",
                 	    "Hora"
                 	}
@@ -211,5 +208,152 @@ public class PanelMatricula extends JPanel {
         table.getColumnModel().getColumn(2).setPreferredWidth(180);  
         table.getColumnModel().getColumn(3).setPreferredWidth(100);  
         table.getColumnModel().getColumn(4).setPreferredWidth(120);  
+        
+        mostrarSiguienteCodigo();
+        listarMatriculas();
+        
+        table.getSelectionModel().addListSelectionListener(e ->{
+        	if(!e.getValueIsAdjusting()) {
+        		mostrarDatos();
+        	}
+        });
 	}
+	
+	
+	public void guardarMatricula() {
+
+	    try {
+
+	        int codAlumno = Integer.parseInt(txxCodAlumno.getText().trim());
+	        int codCurso = Integer.parseInt(txtCodCurso.getText().trim());
+	        
+	        if (gestorAlumnos.buscarAlumno(codAlumno) == null) {
+	            JOptionPane.showMessageDialog(null, "No existe ese Código de Alumno");
+	            return;
+	        }
+
+	        if (gestorCurso.buscarCurso(codCurso) == null) {
+	            JOptionPane.showMessageDialog(null, "No existe ese Código de Curso");
+	            return;
+	        }
+
+	        Matricula matriculaPrevia = gestorMatricula.buscarPorAlumno(codAlumno);
+	        
+	        if (matriculaPrevia != null) {
+	            if (matriculaPrevia.getCodCurso() == codCurso) {
+	                JOptionPane.showMessageDialog(null, "El alumno ya se encuentra matriculado en este curso.");
+	            } else {
+
+	                gestorMatricula.cambiarCursoMatriculado(matriculaPrevia.getNumMatricula(), codCurso);
+	                JOptionPane.showMessageDialog(null, "¡El alumno ya estaba matriculado!\nSe ha cambiado su curso exitosamente.");
+	                
+	                listarMatriculas();
+	                txxCodAlumno.setText("");
+	                txtCodCurso.setText("");
+	            }
+	            return; 
+	        }
+
+	        int numMatricula = gestorMatricula.obtenerSiguienteCodigo();
+	        String fecha = new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+	        String hora = new SimpleDateFormat("HH:mm:ss").format(new Date());
+
+	        Matricula nuevaMatricula = new Matricula(numMatricula, codAlumno, codCurso, fecha, hora);
+	        
+	        gestorMatricula.adicionar(nuevaMatricula);
+	        gestorAlumnos.actualizarEstado(codAlumno, 1);
+
+	        JOptionPane.showMessageDialog(null,"¡Matrícula nueva guardada exitosamente!");
+
+	        listarMatriculas();
+	        mostrarSiguienteCodigo(); 
+	        txxCodAlumno.setText("");
+	        txtCodCurso.setText("");
+	        txxCodAlumno.requestFocus();
+
+	    } catch (NumberFormatException ex) {
+	        JOptionPane.showMessageDialog(null, "Ingrese códigos numéricos válidos.", "Aviso", JOptionPane.ERROR_MESSAGE);
+	    }
+	}
+	
+
+	private void listarMatriculas() {
+		
+	    modelo.setRowCount(0);
+	    ArrayList<Matricula> lista = gestorMatricula.obtenerMatriculas();
+
+	    for (Matricula m : lista) {
+	        Object[] fila = new Object[5];
+	        
+	        fila[0] = m.getNumMatricula();
+	        fila[1] = m.getCodAlumno(); 
+	        fila[2] = m.getCodCurso(); 
+	        fila[3] = m.getFecha();
+	        fila[4] = m.getHora();
+
+	        modelo.addRow(fila);
+	    }
+	}
+	
+
+	private void mostrarDatos() {
+		
+		int fila = table.getSelectedRow();
+		if(fila == -1) {
+			return;
+		}
+		
+		txtNumeroMatricula.setText(table.getValueAt(fila, 0).toString());
+		txxCodAlumno.setText(table.getValueAt(fila, 1).toString());
+		txtCodCurso.setText(table.getValueAt(fila, 2).toString());
+		
+		txxCodAlumno.setEditable(false);
+	}
+	
+	private void mostrarSiguienteCodigo() {
+	    txtNumeroMatricula.setText(String.valueOf(gestorMatricula.obtenerSiguienteCodigo()));
+	    txtNumeroMatricula.setEditable(false);
+	}
+
+	private void limpiarCampos() {
+	    txxCodAlumno.setText("");
+	    txtCodCurso.setText("");
+	    table.clearSelection();
+	    txxCodAlumno.setEditable(true);
+	    txxCodAlumno.requestFocus();
+	}
+	
+	private void cancelarMatricula() {
+
+	    int numMatricula = Integer.parseInt(txtNumeroMatricula.getText().trim());
+	    int codigoAlumno = Integer.parseInt(txxCodAlumno.getText().trim());
+
+	    Alumno alumno = gestorAlumnos.buscarAlumno(codigoAlumno);
+	    
+	    if(alumno == null) {
+	    	JOptionPane.showMessageDialog(null, "No hay un alumno con ese codigo");
+	    	return;
+	    }
+	    
+	    if(alumno.getEstado() == 2) {
+	    	JOptionPane.showMessageDialog(null, "El alumno ya se encuentra retirado");
+	    	return;
+	    }
+	    
+	    int respuesta = JOptionPane.showConfirmDialog(this,"¿Desea eliminar esta matrícula?","Confirmación",JOptionPane.YES_NO_OPTION);
+	    if (respuesta == JOptionPane.YES_OPTION) {
+
+	        if (gestorMatricula.eliminarMatricula(numMatricula)) {
+	        	
+	        	gestorAlumnos.actualizarEstado(codigoAlumno, 0);
+	            JOptionPane.showMessageDialog(this, "Matrícula eliminada correctamente.");
+	            listarMatriculas();
+	            limpiarCampos();
+	            mostrarSiguienteCodigo();
+	        } else {
+	            JOptionPane.showMessageDialog(this,"No se encontró la matrícula.");
+	        }
+	    }
+	}
+	
 }
