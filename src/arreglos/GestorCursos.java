@@ -9,18 +9,26 @@ public class GestorCursos {
     private final String archivo = "cursos.txt";
 
     
-    public void agregarCurso(Curso curso) {
-        try {
-            FileWriter fw = new FileWriter(archivo, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(curso.toLineaArchivo());
-            bw.newLine();
-            bw.close();
-
-        } catch (IOException e) {
-            System.out.println("Error al guardar curso: " + e.getMessage());
+    // Bloque cambiado: agregarCurso ahora valida duplicados, ordena la lista y retorna si fue exitoso
+    public boolean agregarCurso(Curso curso) {
+        if (buscarCurso(curso.getCodCurso()) != null) {
+            return false; // Retorna falso si el código ya existe (evitando repetidos)
         }
+        ArrayList<Curso> cursos = listarCursos();
+        cursos.add(curso);
+        
+        // Ordena la lista de cursos por código de forma ascendente
+        java.util.Collections.sort(cursos, new java.util.Comparator<Curso>() {
+            @Override
+            public int compare(Curso c1, Curso c2) {
+                return Integer.compare(c1.getCodCurso(), c2.getCodCurso());
+            }
+        });
+        
+        guardarTodos(cursos);
+        return true;
     }
+    // Fin de bloque cambiado
 
     public ArrayList<Curso> listarCursos() {
         ArrayList<Curso> cursos = new ArrayList<>();
