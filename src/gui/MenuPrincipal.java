@@ -63,6 +63,7 @@ public class MenuPrincipal extends JFrame {
 		panelContenedor.add(new PanelMatricula(ga,gm,gc), "MATRICULA");
 		panelContenedor.add(new PanelRetiros(ga,gm,gr), "RETIROS");
 		panelContenedor.add(new PanelConsultaAlumnos(ga,gm,gc,gr), "CONSULTA ALUMNOS");
+		panelContenedor.add(new PanelReporte(), "REPORTE");
 		getContentPane().add(panelContenedor);
 
 		cardLayout.show(panelContenedor, "ALUMNOS");
@@ -118,6 +119,9 @@ public class MenuPrincipal extends JFrame {
 		JMenu mnReporte = crearMenuEstilizado("Reporte");
 		mnReporte.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/Imagenes/Iconos/report.png")));
 		menuBar.add(mnReporte);
+		JMenuItem itemReporte = crearItem("Reporte General");
+		itemReporte.setIcon(new ImageIcon(MenuPrincipal.class.getResource("/Imagenes/Iconos/report.png")));
+		mnReporte.add(itemReporte);
 		
 		//Eventos
 		itemAlumnos.addActionListener(e -> mostrarPanel("ALUMNOS"));
@@ -125,6 +129,7 @@ public class MenuPrincipal extends JFrame {
 		itemMatricula.addActionListener(e -> mostrarPanel("MATRICULA"));
 		itemRetiros.addActionListener(e -> mostrarPanel("RETIROS"));
 		itemConsultaAlumnos.addActionListener(e -> mostrarPanel("CONSULTA ALUMNOS"));
+		itemReporte.addActionListener(e -> mostrarPanel("REPORTE"));
 	}
 
 	
