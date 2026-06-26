@@ -273,26 +273,71 @@ public class PanelAlumnos extends JPanel {
 
         try {
 
-            int codAlumno = Integer.parseInt(txtCodigo.getText().trim());
+            String codigoTxt = txtCodigo.getText().trim();
             String nombre = txtNombres.getText().trim();
             String apellidos = txtApellidos.getText().trim();
             String dni = txtDni.getText().trim();
-            int edad = Integer.parseInt(txtEdad.getText().trim());
-            int celular = Integer.parseInt(txtCelular.getText().trim());
+            String edadTxt = txtEdad.getText().trim();
+            String celularTxt = txtCelular.getText().trim();
 
-            // ================= VALIDACIONES =================
-            if (nombre.isEmpty() || apellidos.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Nombre y apellido son obligatorios");
+         // ================= CAMPOS OBLIGATORIOS =================
+            if (nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese el nombre");
+                txtNombres.requestFocus();
                 return;
             }
 
+            if (apellidos.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese los apellidos");
+                txtApellidos.requestFocus();
+                return;
+            }
+
+            if (dni.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese el DNI");
+                txtDni.requestFocus();
+                return;
+            }
+
+            if (edadTxt.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese la edad");
+                txtEdad.requestFocus();
+                return;
+            }
+
+            if (celularTxt.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Ingrese el celular");
+                txtCelular.requestFocus();
+                return;
+            }
+
+            // ================= VALIDAR FORMATOS =================
             if (!dni.matches("\\d{8}")) {
                 JOptionPane.showMessageDialog(this, "DNI debe tener 8 dígitos");
+                txtDni.requestFocus();
                 return;
             }
 
-            if (!String.valueOf(celular).matches("\\d{9}")) {
+            if (!edadTxt.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this, "La edad debe ser numérica");
+                txtEdad.requestFocus();
+                return;
+            }
+
+            if (!celularTxt.matches("\\d{9}")) {
                 JOptionPane.showMessageDialog(this, "Celular debe tener 9 dígitos");
+                txtCelular.requestFocus();
+                return;
+            }
+            
+            // Convertir recién después de validar
+            int codAlumno = Integer.parseInt(codigoTxt);
+            int edad = Integer.parseInt(edadTxt);
+            int celular = Integer.parseInt(celularTxt);
+            
+            if (edad < 17 || edad > 60) {
+                JOptionPane.showMessageDialog(this, "Ingrese una edad válida");
+                txtEdad.requestFocus();
                 return;
             }
 
