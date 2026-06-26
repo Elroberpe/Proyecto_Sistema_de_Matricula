@@ -28,7 +28,6 @@ import javax.swing.table.DefaultTableModel;
 
 import arreglos.GestorCursos;
 import clases.Curso;
-import javax.swing.JCheckBox;
 
 public class PanelCursos extends JPanel {
 
