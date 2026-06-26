@@ -335,7 +335,7 @@ public class PanelAlumnos extends JPanel {
             int edad = Integer.parseInt(edadTxt);
             int celular = Integer.parseInt(celularTxt);
             
-            if (edad < 16 || edad > 100) {
+            if (edad < 17 || edad > 60) {
                 JOptionPane.showMessageDialog(this, "Ingrese una edad válida");
                 txtEdad.requestFocus();
                 return;

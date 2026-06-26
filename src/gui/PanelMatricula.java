@@ -82,7 +82,7 @@ public class PanelMatricula extends JPanel {
         
         // ==================== NUMERO DE MATRICULA ====================
         JLabel lblNumMatricula = new JLabel("NUMERO DE MATRICULA");
-        lblNumMatricula.setBounds(16, 62, 120, 20);
+        lblNumMatricula.setBounds(16, 62, 156, 20);
         lblNumMatricula.setFont(new Font("Segoe UI", Font.BOLD, 12));
         panelFormulario.add(lblNumMatricula);
 
@@ -94,7 +94,7 @@ public class PanelMatricula extends JPanel {
 
         // ==================== CODIGO DE ALUMNO ====================
         JLabel lblAlumno = new JLabel("CODIGO DEL ALUMNO");
-        lblAlumno.setBounds(16, 130, 120, 20);
+        lblAlumno.setBounds(16, 130, 156, 20);
         lblAlumno.setFont(new Font("Segoe UI", Font.BOLD, 12));
         panelFormulario.add(lblAlumno);
 
@@ -106,7 +106,7 @@ public class PanelMatricula extends JPanel {
 
         // ==================== CODIGO CURSO ====================
         JLabel lblCurso = new JLabel("CODIGO DEL CURSO");
-        lblCurso.setBounds(16, 198, 120, 20);
+        lblCurso.setBounds(16, 198, 156, 20);
         lblCurso.setFont(new Font("Segoe UI", Font.BOLD, 12));
         panelFormulario.add(lblCurso);
 

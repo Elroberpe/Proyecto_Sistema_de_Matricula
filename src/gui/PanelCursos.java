@@ -28,13 +28,13 @@ import javax.swing.table.DefaultTableModel;
 
 import arreglos.GestorCursos;
 import clases.Curso;
+import javax.swing.JCheckBox;
 
 public class PanelCursos extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
 	private JTextField txtCodigo;
-	private JTextField txtAsignatura;
 	private JTextField txtCreditos;
 	private JTextField txtHoras;
 
@@ -48,6 +48,8 @@ public class PanelCursos extends JPanel {
 	private DefaultTableModel modelo;
 
 	private GestorCursos gestor;
+	private JTextField txtAsignatura;
+	// private JComboBox cboAsignatura;
 
 	public PanelCursos() {
 
@@ -70,7 +72,7 @@ public class PanelCursos extends JPanel {
 		panelFormulario.setBorder(BorderFactory.createLineBorder(new Color(210, 215, 220)));
 		panelFormulario.setLayout(null);
 		panelPrincipal.add(panelFormulario, BorderLayout.WEST);
-		
+
 		JLabel lblTitulo = new JLabel("Detalle del Curso");
 		lblTitulo.setBounds(16, 12, 250, 25);
 		lblTitulo.setFont(new Font("Segoe UI", Font.BOLD, 13));
@@ -93,9 +95,6 @@ public class PanelCursos extends JPanel {
 		JLabel lblAsignatura = new JLabel("ASIGNATURA");
 		lblAsignatura.setBounds(16, 130, 120, 20);
 		panelFormulario.add(lblAsignatura);
-		txtAsignatura = new JTextField();
-		txtAsignatura.setBounds(16, 153, 278, 32);
-		panelFormulario.add(txtAsignatura);
 
 		// CREDITOS
 
@@ -120,9 +119,8 @@ public class PanelCursos extends JPanel {
 		JLabel lblCiclo = new JLabel("CICLO");
 		lblCiclo.setBounds(16, 334, 120, 20);
 		panelFormulario.add(lblCiclo);
-		String ciclos[] = {
-				"I Ciclo", "II Ciclo", "III Ciclo", "IV Ciclo", "V Ciclo", "VI Ciclo", "VII Ciclo", "VIII Ciclo",
-				"IX Ciclo", "X Ciclo"
+		String ciclos[] = { "I Ciclo", "II Ciclo", "III Ciclo", "IV Ciclo", "V Ciclo", "VI Ciclo", "VII Ciclo",
+				"VIII Ciclo", "IX Ciclo", "X Ciclo"
 
 		};
 
@@ -159,6 +157,10 @@ public class PanelCursos extends JPanel {
 		btnEliminar.setForeground(Color.WHITE);
 		panelFormulario.add(btnEliminar);
 
+		txtAsignatura = new JTextField();
+		txtAsignatura.setBounds(16, 152, 278, 35);
+		panelFormulario.add(txtAsignatura);
+
 		// PANEL TABLA
 
 		// =======================
@@ -171,20 +173,17 @@ public class PanelCursos extends JPanel {
 		panelTabla.setBorder(BorderFactory.createLineBorder(new Color(210, 215, 220)));
 		panelPrincipal.add(panelTabla, BorderLayout.CENTER);
 		panelTabla.setBorder(BorderFactory.createLineBorder(new Color(210, 215, 220)));
-		
+
 		panelPrincipal.add(panelTabla, BorderLayout.CENTER);
-		
+
 		JScrollPane scroll = new JScrollPane();
 		scroll.setBorder(new EmptyBorder(0, 0, 0, 0));
-		
+
 		panelTabla.add(scroll, BorderLayout.CENTER);
 
 		table = new JTable();
-		modelo = new DefaultTableModel(
-				new Object[][] {},
-				new String[] {
-						"Código", "Asignatura", "Créditos", "Horas", "Ciclo"
-				}
+		modelo = new DefaultTableModel(new Object[][] {},
+				new String[] { "Código", "Asignatura", "Créditos", "Horas", "Ciclo" }
 
 		) {
 
@@ -192,6 +191,7 @@ public class PanelCursos extends JPanel {
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
+
 			public boolean isCellEditable(int fila, int columna) {
 				return false;
 			}
@@ -200,25 +200,24 @@ public class PanelCursos extends JPanel {
 
 		table.setModel(modelo);
 		scroll.setViewportView(table);
-		
-        table.setRowHeight(36);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        table.setForeground(Color.BLACK);
-        table.setGridColor(new Color(230, 230, 230));
-        table.setSelectionBackground(new Color(227, 242, 253));
-        table.setSelectionForeground(Color.BLACK);
-        table.setShowVerticalLines(true);
-        table.setShowHorizontalLines(true);
-		
+
+		table.setRowHeight(36);
+		table.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+		table.setForeground(Color.BLACK);
+		table.setGridColor(new Color(230, 230, 230));
+		table.setSelectionBackground(new Color(227, 242, 253));
+		table.setSelectionForeground(Color.BLACK);
+		table.setShowVerticalLines(true);
+		table.setShowHorizontalLines(true);
+
 		table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
-        table.getTableHeader().setBackground(new Color(38, 50, 56));
-        table.getTableHeader().setForeground(Color.WHITE);
-        table.getTableHeader().setPreferredSize(new Dimension(0, 36));
-        table.getTableHeader().setReorderingAllowed(false);
+		table.getTableHeader().setBackground(new Color(38, 50, 56));
+		table.getTableHeader().setForeground(Color.WHITE);
+		table.getTableHeader().setPreferredSize(new Dimension(0, 36));
+		table.getTableHeader().setReorderingAllowed(false);
 
-		
-
-		// Bloque añadido: MouseListener para cargar el curso seleccionado cuando se hace clic en la tabla
+		// Bloque añadido: MouseListener para cargar el curso seleccionado cuando se
+		// hace clic en la tabla
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -231,35 +230,30 @@ public class PanelCursos extends JPanel {
 
 		// EVENTOS
 
-		btnGuardar.addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						guardarCurso();
-					}
-				}
-		);
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				guardarCurso();
+			}
+		});
 
-		btnLimpiar.addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						limpiarCampos();
-					}
-				}
-		);
+		btnLimpiar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				limpiarCampos();
+			}
+		});
 
-		btnEliminar.addActionListener(
-				new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						eliminarCurso();
-					}
-				}
-		);
+		btnEliminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				eliminarCurso();
+			}
+		});
 		cargarTabla();
 
 	}
 
 	// ==========================
-	// GUARDAR CURSO (Bloque cambiado: ahora valida campos, maneja adición y modificación, y limpia/recarga)
+	// GUARDAR CURSO (Bloque cambiado: ahora valida campos, maneja adición y
+	// modificación, y limpia/recarga)
 	// ==========================
 	private void guardarCurso() {
 		try {
@@ -345,20 +339,14 @@ public class PanelCursos extends JPanel {
 	private void cargarTabla() {
 		modelo.setRowCount(0);
 		for (Curso c : gestor.listarCursos()) {
-			modelo.addRow(
-					new Object[] {
-							c.getCodCurso(),
-							c.getAsignatura(),
-							c.getCreditos(),
-							c.getHoras(),
-							c.getCiclo() + " Ciclo"
-					}
-			);
+			modelo.addRow(new Object[] { c.getCodCurso(), c.getAsignatura(), c.getCreditos(), c.getHoras(),
+					c.getCiclo() + " Ciclo" });
 		}
 	}
 
 	// ==========================
-	// LIMPIAR (Bloque cambiado: restablece la editabilidad y color del código, y limpia la selección)
+	// LIMPIAR (Bloque cambiado: restablece la editabilidad y color del código, y
+	// limpia la selección)
 	// ==========================
 	private void limpiarCampos() {
 
@@ -374,7 +362,8 @@ public class PanelCursos extends JPanel {
 	// Fin de bloque cambiado
 
 	// ==========================
-	// ELIMINAR (Bloque cambiado: valida matrícula activa en GestorMatricula y pide confirmación antes de borrar)
+	// ELIMINAR (Bloque cambiado: valida matrícula activa en GestorMatricula y pide
+	// confirmación antes de borrar)
 	// ==========================
 	private void eliminarCurso() {
 		int fila = table.getSelectedRow();
@@ -396,18 +385,15 @@ public class PanelCursos extends JPanel {
 		}
 
 		if (tieneMatriculados) {
-			JOptionPane.showMessageDialog(this, "No se puede eliminar el curso porque hay alumnos matriculados en él.", "Acción denegada", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "No se puede eliminar el curso porque hay alumnos matriculados en él.",
+					"Acción denegada", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
 		// Solicitar confirmación previa antes de la eliminación física
-		int confirmar = JOptionPane.showConfirmDialog(
-			this,
-			"¿Está seguro de eliminar físicamente este curso? Esta acción no se puede deshacer.",
-			"Confirmar eliminación física",
-			JOptionPane.YES_NO_OPTION,
-			JOptionPane.WARNING_MESSAGE
-		);
+		int confirmar = JOptionPane.showConfirmDialog(this,
+				"¿Está seguro de eliminar físicamente este curso? Esta acción no se puede deshacer.",
+				"Confirmar eliminación física", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
 		if (confirmar == JOptionPane.YES_OPTION) {
 			if (gestor.eliminarCurso(codigo)) {
@@ -422,7 +408,8 @@ public class PanelCursos extends JPanel {
 	// Fin de bloque cambiado
 
 	// ==========================
-	// CARGAR CURSO SELECCIONADO (Bloque añadido: busca el curso por código y llena el formulario, inhabilitando el código)
+	// CARGAR CURSO SELECCIONADO (Bloque añadido: busca el curso por código y llena
+	// el formulario, inhabilitando el código)
 	// ==========================
 	private void cargarCursoSeleccionado() {
 		int fila = table.getSelectedRow();
@@ -441,6 +428,4 @@ public class PanelCursos extends JPanel {
 			}
 		}
 	}
-	// Fin de bloque añadido
-
 }
